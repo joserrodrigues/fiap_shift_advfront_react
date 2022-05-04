@@ -1,8 +1,7 @@
-body {
-  background-color: black;
-}
-.App {
+.itemClass {
   text-align: center;
-  font-size: 28px;
-  color: #ed145b;
+}
+
+.text{
+  text-align: center;
 }
