@@ -1,8 +1,7 @@
 import React from 'react';
-import { Box, Container, Grid, Typography, Button, Stack, Snackbar, CircularProgress } from '@mui/material';
+import { Box, Container, Grid, Typography, Button, Stack } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import Header from '../../Components/Header/Header';
 
 import './Add.css'
@@ -10,76 +9,7 @@ import sizes from '../../Utils/Common/Sizes';
 import CardPhotos from '../../Components/CardPhotos/CardPhotos';
 import CardDetailInfoToy from '../../Components/CardDetailInfoToy/CardDetailInfoToy';
 
-const AddView = ({ signInSchema, onSubmit, onChangeImage, onDeleteImage, onBack, isNewToy, toyInfo,
-    isLoading, mainImage, detailImage1, detailImage2, messageInfo, showMessageInfo, onCloseMessage,
-    statusToy, onChangeToyStatus }) => {
-
-
-    let topPageInfo = null;
-    let topButtonDonate = null;
-    if (isNewToy) {
-        topPageInfo = (
-            <>
-                <Typography variant="h1" >
-                    Cadastrar novo brinquedo
-                </Typography>
-            </>
-        );
-    } else {
-
-        let topPageStatusDonate = null;
-        if (statusToy === 1) {
-            topPageStatusDonate = (
-                <Stack spacing={1} direction="row" alignItems="center">
-                    <CheckCircleOutlineIcon color="success" sx={{ fontSize: sizes.FontSizeMD }} />
-                    <Typography variant="body1" >
-                        Disponível para doação
-                    </Typography>
-                </Stack>
-            );
-            topButtonDonate = (
-                <Button variant='primary' className='buttonDonateClass' onClick={onChangeToyStatus}>Marcar como doado</Button>
-            );
-
-        } else {
-            topPageStatusDonate = (
-                <Stack spacing={1} direction="row" alignItems="center">
-                    <HighlightOffIcon color="error" sx={{ fontSize: sizes.FontSizeMD }} />
-                    <Typography variant="body1" >
-                        Indisponível para doação
-                    </Typography>
-                </Stack>
-            );
-            topButtonDonate = (
-                <Button variant='primary' className='buttonDonateClass' onClick={onChangeToyStatus}>Marcar como disponível</Button>
-            );
-        }
-
-        if (isLoading) {
-            topButtonDonate = (
-                <CircularProgress size={14} className="circularProgressDonateStatus" />
-            );
-        }
-
-        topPageInfo = (
-            <Grid
-                container
-                spacing={3}
-                alignItems="center"
-            >
-                <Grid item lg={12} xl={12}>
-                    <Typography variant="h1" md={12} >
-                        {toyInfo.name}
-                    </Typography>
-                </Grid>                
-                <Grid item lg={12} xl={12} className="titleInfoDonateDiv">
-                    {topPageStatusDonate}
-                </Grid>
-                
-            </Grid>
-        );
-
-    }
+const AddView = ({ signInSchema, onSubmit, onChangeImage}) => {
     return (
         <Container fixed className="container" maxWidth="lg">
             <Header />
@@ -90,13 +20,13 @@ const AddView = ({ signInSchema, onSubmit, onChangeImage, onDeleteImage, onBack,
                     alignItems="center"
                 >
                     <Grid item lg={12} xl={12}>
-                        <Stack spacing={1} direction="row" alignItems="center" onClick={onBack} sx={{ cursor: 'pointer' }}>
+                        <Stack spacing={1} direction="row" alignItems="center">
                             <ArrowBackIcon color="secondary" sx={{ fontSize: sizes.FontSizeMD }} />
                             <Typography variant="body2" color="secondary" className='backText' >
                                 Voltar
                             </Typography>
                         </Stack>
-
+                        
                     </Grid>
                     <Grid item lg={12} xl={12} className="titlePage">
                         <Grid
@@ -104,36 +34,33 @@ const AddView = ({ signInSchema, onSubmit, onChangeImage, onDeleteImage, onBack,
                             spacing={3}
                             alignItems="center"
                         >
-                            <Grid item md={12} lg={8} className="titlePage">
+                            <Grid item md={8}  className="titlePage">
                                 <Stack spacing={1} direction="row" alignItems="center">
-                                    {topPageInfo}
+                                <Typography variant="h1" >
+                                    Bloco de Silicone
+                                </Typography>
+                                    <CheckCircleOutlineIcon color="success" sx={{ fontSize: sizes.FontSizeMD }} />
+                                <Typography variant="body1" >
+                                    Disponível para doação
+                                </Typography>
                                 </Stack>
                             </Grid>
-                            <Grid item md={12} lg={4} className="buttonDonateDiv">
-                                {topButtonDonate}
+                            <Grid item md={4} className="buttonDonateDiv">
+                                <Button variant='disabled' className='buttonClass'  >Marcar como doado</Button>
                             </Grid>
-                        </Grid>
+                        </Grid>                    
                     </Grid>
-                    <Grid item md={12} lg={5} className="titlePage">
-                        <CardPhotos
+                    <Grid item sm={12} md={5} className="titlePage">
+                        <CardPhotos 
+                            mainImage={"http://diariogaucho.rbsdirect.com.br/imagesrc/17555210.jpg?w=620"} 
+                            detailImage1={"http://diariogaucho.rbsdirect.com.br/imagesrc/17555210.jpg?w=620"} 
+                            detailImage2={"http://diariogaucho.rbsdirect.com.br/imagesrc/17555210.jpg?w=620"} 
                             onChangeImage={onChangeImage}
-                            onDeleteImage={onDeleteImage}
-                            isLoading={isLoading}
-                            mainImage={mainImage} detailImage1={detailImage1} detailImage2={detailImage2}
                         />
                     </Grid>
-                    <Grid item md={12} lg={7} className="titlePage">
-                        <CardDetailInfoToy onSubmit={onSubmit} signInSchema={signInSchema} isLoading={isLoading}
-                            isNewToy={isNewToy} toyInfo={toyInfo} />
+                    <Grid item sm={12} md={7} className="titlePage">
+                        <CardDetailInfoToy onSubmit={onSubmit} signInSchema={signInSchema} />
                     </Grid>
-                    <Snackbar
-                        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-                        open={showMessageInfo}
-                        autoHideDuration={6000}
-                        onClose={onCloseMessage}
-                    >
-                        {messageInfo}
-                    </Snackbar>
                 </Grid>
             </Box>
         </Container>
