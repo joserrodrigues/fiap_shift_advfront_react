@@ -4,16 +4,24 @@ import toys from '../../Services/APIs/Toys/toys';
 import HomeView from './HomeView';
 import { useNavigate } from "react-router-dom";
 import { InfoContext } from "../../store/InfoContext";
+import { Alert } from '@mui/material';
 
 const HomeController = () => {
 
     const getToysGetAPI = useAPI(toys.getAllToys);
     const getToysPaginateAPI = useAPI(toys.getToysPaginate);
+    const deleteToyAPI = useAPI(toys.deleteToy);
+    const [isLoadingDelete, setIsLoadingDelete] = useState(false);
+    const [messageInfo, setMessageInfo] = useState(null);
+    const [showAlertInfo, setShowAlertInfo] = useState(false);
+    const [showConfirmDeleteDialog, setShowConfirmDeleteDialog] = useState(false);
+    const choseToy = useRef(-1);
+    const tableRef = useRef(null);
+
     const navigate = useNavigate();
     const userCoordinates = useRef(null);
     const context = useContext(InfoContext);
     const [viewType, setViewType] = useState("cards");
-
 
     useEffect(() => {
         getToysGetAPI.request(1);
@@ -75,10 +83,56 @@ const HomeController = () => {
         })
     }
 
-    console.log(getToysGetAPI.data)
+    const onHandleCloseDialog = (buttonClicked) => {
+
+        if (buttonClicked === 2){
+            setIsLoadingDelete(true);
+            console.log("AQUI - " + choseToy.current);
+
+            deleteToyAPI.requestPromise(context.tokenLogin, choseToy.current)
+                .then(info => {
+                    console.log(info);
+                    setIsLoadingDelete(false);
+                    setMessageInfo(
+                        <Alert severity="success">
+                            Brinquedo removido com sucesso
+                        </Alert>
+                    )
+                    setShowAlertInfo(true);
+                    getToysGetAPI.request(1);
+                    if (tableRef.current) {
+                        tableRef.current.onQueryChange();
+                    }
+                })
+                .catch(error => {
+                    console.log(error);
+                    setIsLoadingDelete(false);
+                    setShowAlertInfo(true);
+                    setMessageInfo(
+                        <Alert severity="error">
+                            Erro ao remover o brinquedo {error.code}
+                        </Alert>
+                    )
+                })   
+        }
+        setShowConfirmDeleteDialog(false);
+    }
+
+    const onDeleteToy = (toy) => {
+        console.log(toy);
+        choseToy.current = toy._id;
+        setShowConfirmDeleteDialog(true);
+    }
+
+    const onCloseAlertInfo = () => {
+        setShowAlertInfo(false);
+    }
+
     return <HomeView arrayToys={getToysGetAPI.data} loading={getToysGetAPI.loading}
         goToPage={goToPage} info={context.info} getDataPage={getDataPage}
         viewType={viewType} onChangeViewType={onChangeViewType}
-        addToy={addToy} />
+        addToy={addToy} onDeleteToy={onDeleteToy} isLoadingDelete={isLoadingDelete} messageInfo={messageInfo}
+        showConfirmDeleteDialog={showConfirmDeleteDialog} onHandleCloseDialog={onHandleCloseDialog} showAlertInfo={showAlertInfo}
+        onCloseAlertInfo={onCloseAlertInfo} tableRef={tableRef} />
 }
 export default HomeController;
