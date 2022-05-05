@@ -1,14 +1,18 @@
 import React, { useContext } from 'react';
 import HomeController from '../Screens/Home/HomeController';
-import DetailController from '../Screens/Detail/DetailController';
 import LoginController from '../Screens/Login/LoginController';
 import { Routes, Route } from "react-router-dom";
 import { InfoContext } from '../store/InfoContext';
 import AddController from '../Screens/Add/AddController';
+import DetailController from '../Screens/Detail/DetailController'
+import { getNotificationToken, onMessageListener } from '../Services/Firebase/ManageFirebase';
 
 const RouteController = () => {
-    
+
     const { tokenLogin, onMakeLogin } = useContext(InfoContext);
+
+    getNotificationToken();
+    onMessageListener();
 
     let hasToken = false;
     if (tokenLogin === undefined || tokenLogin === null) {
@@ -38,7 +42,7 @@ const RouteController = () => {
                 <Route path="*" element={<LoginController />} />
             </Routes>
         );
-    } 
+    }
 };
 
 export default RouteController;
